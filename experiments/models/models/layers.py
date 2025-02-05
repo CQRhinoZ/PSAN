@@ -190,9 +190,9 @@ class MHSSA(nn.Module):
                 query @ key.transpose(-1, -2)
         ) / self.head_dim ** 0.5
 
+
         if sim is not None:
             att_score = att_score + sim.unsqueeze(0).unsqueeze(0)
-
         # print(key.shape)
 
         att_score = self.dropout(torch.softmax(att_score, dim=-1))
@@ -205,7 +205,7 @@ class MHSSA(nn.Module):
 
         return out
 
-class BiTCN(nn.Module):
+class BiLSTCM(nn.Module):
     def __init__(self, window_size, emb_dim):
         super().__init__()
         self.window_size = window_size
@@ -241,7 +241,7 @@ class BiTCN(nn.Module):
         out = self.fc(out)
         return out
 
-class ProtoNet(nn.Module):
+class PLM(nn.Module):
     def __init__(self, emb_dim, nnodes, k):
         super().__init__()
         self.nnodes = nnodes
