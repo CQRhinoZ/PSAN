@@ -1,0 +1,18 @@
+#########################      INFERENCE CONFIG      ##########################
+
+#### Experiment params ########################################################
+root: 'log'
+#dataset_name: [la_point, bay_point, la_bock, bay_bock, air, air36]
+#model_name: [spin, spin_h, grin, transformer, saits, brits]
+#exp_name: {exp_name}
+
+#### Data params ##############################################################
+p_fault: 0
+# p_noise: 0.95  # [0.5, 0.75, 0.95]
+p_noise: 0.25  # [0.5, 0.75, 0.95]
+test_mask_seed: [9101112]
+
+
+#### Windowing params #########################################################
+# batch_size: 128
+batch_size: 32
