@@ -4,9 +4,7 @@ import torch.nn.functional as F
 from .layers import *
 
 ##########################
-
 ## Spatio-temporal Encoder
-
 ##########################
 
 class STEncoder(nn.Module):
@@ -18,17 +16,17 @@ class STEncoder(nn.Module):
         self.T = nn.ModuleList([
             BiLSTCM(in_len, emb_dim) for _ in range(layer)
         ])
-    
+
         self.S = nn.ModuleList([
             SpatialMHSA(emb_dim, nheads) for _ in range(layer)
         ])
-    
+
         self.resi = nn.ModuleList([
             FeedForwardNet(emb_dim) for _ in range(layer)
         ])
-    
+
         self.pn = PLM(emb_dim, nnodes, k=k)
-    
+
     def forward(self, x):
         """
         :param x: BxTxNxD
@@ -67,21 +65,21 @@ class Net(nn.Module):
         self.emb_dim = 64
 
         self.DataEmb = DataEmbedding(self.emb_dim, self.in_len, self.out_len, nnodes)
-    
+
         self.Encoder = STEncoder(self.in_len, self.k, nnodes, self.emb_dim, layers, nheads)
-    
+
         self.imputer = nn.Sequential(
             nn.Linear(self.emb_dim, self.emb_dim),
             nn.ReLU(),
             nn.Linear(self.emb_dim, self.out_dim)
         )
-    
+
     def process_before(self, x, u, mask):
         x = x * mask
         u = u.unsqueeze(dim=2).expand(-1,-1,x.shape[2], -1)
         x = torch.cat([x, u], dim=-1)
         return x
-    
+
     def forward(self, x, u, mask):
         """
         :param x: BxTxNx1
@@ -92,7 +90,7 @@ class Net(nn.Module):
         out = self.Encoder(x)
         out = self.imputer(out)  # BxTxNx1
         return out
-    
+
     @staticmethod
     def add_model_specific_args(parser):
         parser.add_argument('--k', type=int, default=10)
